@@ -1,34 +1,53 @@
 package main
 
 import (
-	"fmt"
-	"math/rand"
+    "fmt"
+    "math/rand"
 )
 
-type Kmer struct {
-	// Do I use list, tuple or map?
+type KmerSeq struct{ 
+    Kmer  string
+    Count int
 }
 
-func generate_kmer_seq() string {
-	var base [4]string
-	base[0] = "A"
-	base[1] = "C"
-	base[2] = "G"
-	base[3] = "T"
+func makeSequence(size int) string {
+    seq := ""
+    chars := [4]string{"A", "G", "T", "C"}
 
-	rand.New(rand.NewSource(42))
-
-	var res string = ""
-
-	for i := 0; i < 20; i++ {
-		res += base[rand.Int()%4]
-	}
-	return res
+    for i:= 0; i < size; i++ {
+        seq += chars[rand.Intn(3)]
+    }
+    return seq
 }
 
-func One_mer()
+func findKmers(dna string, k int) []KmerSeq {
+    kmerMap := make(map[string]int)
+
+    for i:=0; i<len(dna)-k; i++ {
+        kmer := dna[i : i+k]
+        kmerMap[kmer]++
+    }
+
+    var kmerSeq []KmerSeq
+
+    for kmer, count := range kmerMap {
+        kmerSeq = append(kmerSeq, KmerSeq{Kmer: kmer, Count: count})
+    }
+    return kmerSeq
+}
 
 func main() {
-	fmt.Println("Kmer Sequence Generator")
-	fmt.Println(generate_kmer_seq())
+    var dna_sequence string = makeSequence(20)
+
+    fmt.Println(dna_sequence)
+
+    fmt.Println()
+
+    IVmers := findKmers(dna_sequence, 4)
+
+    fmt.Printf("Kmers of length %d:\n", 4)
+
+    for _, kmer := range IVmers {
+        fmt.Printf("%s: %d\n", kmer.Kmer, kmer.Count)
+    }
 }
